@@ -10,7 +10,7 @@ Install from the command line:
 
 ## Usage
 
-td_statement_extractor INPUT_FILE OUTPUT_FILE
+    td_statement_extractor INPUT_FILE OUTPUT_FILE
 
 ## Development
 
