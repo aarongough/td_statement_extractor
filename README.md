@@ -1,28 +1,16 @@
-# TdStatementExtractor
+# TD Statement Extractor
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/td_statement_extractor`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Extract machine readable transaction data from TD credit card statements. Useful for importing data quickly into a bookkeeping or accounting system!
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'td_statement_extractor'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install from the command line:
 
     $ gem install td_statement_extractor
 
 ## Usage
 
-TODO: Write usage instructions here
+td_statement_extractor INPUT_FILE OUTPUT_FILE
 
 ## Development
 
@@ -32,7 +20,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/td_statement_extractor.
+Bug reports and pull requests are welcome on GitHub at https://github.com/aarongough/td_statement_extractor.
 
 ## License
 
