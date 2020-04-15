@@ -1,15 +1,22 @@
 require "td_statement_extractor/version"
+require "pdf-reader"
 
 class TdStatementExtractor
   class << self
 
     DATE1_REGEX = /(?<date1>(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s[0-9]+)/
     DATE2_REGEX = /(?<date2>(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s[0-9]+)/
-    AMOUNT_REGEX = /(?<amount>-?\$\d+\.\d+)/
+    AMOUNT_REGEX = /(?<amount>-?\$[,\d]+\.\d+)/
     DESCRIPTION_REGEX = /#{DATE1_REGEX}\s+#{DATE2_REGEX}?\s+(?<description>.+)\s+#{AMOUNT_REGEX}/
 
-    def extract(input_file, output_file)
+    def extract_data_from_pdf(input_file_path)
+      pdf = PDF::Reader.new(input_file_path)
+      text = pdf.pages.map {|page| page.text }.join
 
+      text.each_line.map do |line|
+        next unless transaction_line?(line)
+        data_from_line(line)
+      end.compact
     end
 
     def transaction_line?(line)

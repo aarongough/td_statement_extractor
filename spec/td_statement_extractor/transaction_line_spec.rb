@@ -7,6 +7,16 @@ RSpec.describe TdStatementExtractor do
       expect(TdStatementExtractor.transaction_line?(clean_line)).to be true
     end
 
+    it "returns true when given a clean transaction line with commas in amount" do
+      clean_line = "DEC 2        DEC 3      PAYMENT - THANK YOU                            $8,270.69"
+      expect(TdStatementExtractor.transaction_line?(clean_line)).to be true
+    end
+
+    it "returns true when given a clean payment transaction line with commas in amount" do
+      clean_line = "DEC 3        DEC 4      PAYMENT - THANK YOU                          -$3,306.61"
+      expect(TdStatementExtractor.transaction_line?(clean_line)).to be true
+    end
+
     it "returns true when given a transaction line with leading spaces" do
       dirty_line = "        DEC 6       DEC 6      SHOPIFY-CHARGE.COM OTTAWA                     $665.92"
       expect(TdStatementExtractor.transaction_line?(dirty_line)).to be true
