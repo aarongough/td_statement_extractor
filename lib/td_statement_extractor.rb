@@ -17,18 +17,19 @@ class TdStatementExtractor
     end
 
     def data_from_line(line)
-      begin
-        date = line.match(DATE1_REGEX)[:date1]
-        amount = line.match(AMOUNT_REGEX)[:amount]
-        description = line.match(DESCRIPTION_REGEX)[:description].strip
-      rescue NoMethodError
-        raise(RuntimeError, "Error extracting data from line: #{line}")
-      end
+      date = line.match(DATE1_REGEX)&.[](:date1)
+      amount = line.match(AMOUNT_REGEX)&.[](:amount)
+      description = line.match(DESCRIPTION_REGEX)&.[](:description)&.strip
 
-      raise RuntimeError, "Error extracting data from line: #{line}" if description.empty?
+      raise MissingDateError, "Error extracting DATE from line: #{line}" if date.nil? || date.empty?
+      raise MissingAmountError, "Error extracting AMOUNT from line: #{line}" if amount.nil? || amount.empty?
+      raise MissingDescriptionError, "Error extracting DESCRIPTION from line: #{line}" if description.nil? || description.empty?
 
       { date: date, description: description, amount: amount }
     end
-
   end
+
+  class MissingDateError < StandardError; end
+  class MissingAmountError < StandardError; end
+  class MissingDescriptionError < StandardError; end
 end

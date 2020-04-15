@@ -34,17 +34,17 @@ RSpec.describe TdStatementExtractor do
 
     it "raises an error when the transaction line does not have a valid date" do
       error_line = "TDSTM210DE_7643586_0      SHOPIFY-CHARGE.COM OTTAWA                     $652.53TDST"
-      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(RuntimeError)
+      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(TdStatementExtractor::MissingDateError)
     end
 
     it "raises an error when the transaction line does not have a valid amount" do
       error_line = "TDSTM210DE_7643586_0DEC 6      SHOPIFY-CHARGE.COM OTTAWA                     TDST"
-      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(RuntimeError)
+      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(TdStatementExtractor::MissingAmountError)
     end
 
     it "raises an error when the transaction line does not have a description" do
       error_line = "TDSTM210DE_7643586_0DEC 6                                                    $652.53TDST"
-      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(RuntimeError)
+      expect { TdStatementExtractor.data_from_line(error_line) }.to raise_error(TdStatementExtractor::MissingDescriptionError)
     end
 
   end
