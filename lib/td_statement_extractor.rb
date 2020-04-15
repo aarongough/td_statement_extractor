@@ -12,20 +12,36 @@ class TdStatementExtractor
     AMOUNT = /(?<amount>-?\$[,\d]+\.\d+)/
     DESCRIPTION = /#{DATE}\s+#{DATE}?\s+(?<description>.+)\s+#{AMOUNT}/
 
-    def extract_data_from_pdf(input_file_path)
-      pdf = PDF::Reader.new(input_file_path)
+    def pre_process_pdf(input_file_path)
+      raise GhostscriptNotInstalledError, "Please install Ghostscript. See docs for more info." if `which gs`.empty?
+      temp_file_path = File.join(File.dirname(input_file_path), "td_statement_temp_#{Time.now.to_i}.pdf")
+
+      # Use Ghostscript to decrypt and decompress the PDF. Also remove
+      # all images and crop the margins to remove watermarking that interferes
+      # with the scraping process
+      `gs -o #{temp_file_path} -sDEVICE=pdfwrite -dFILTERVECTOR -dFILTERIMAGE -g5400x7200 -c "<</PageOffset [-36 -36]>> setpagedevice" -f #{input_file_path}` 
+
+      temp_file_path
+    end
+
+    def extract_data_from_pdf(input_file_path, debug = false)
+      processed_pdf_path = pre_process_pdf(input_file_path)
+      pdf = PDF::Reader.new(processed_pdf_path)
       text = pdf.pages.map {|page| page.text }.join
 
       statement_date = text.match(STATEMENT_DATE)&.[](:statement_date)
       raise InvalidStatementDateError, "Unable to extract statement date" if statement_date.nil? || statement_date.empty?
 
       text.each_line.map do |line|
+        puts "#{transaction_line?(line) ? 'T' : 'F'} - #{line.lstrip.strip}" if debug && line.match?(/\w+/)
         next unless transaction_line?(line)
         data = data_from_line(line)
         data[:date] = transform_date(data[:date], statement_date)
 
         data
       end.compact
+    ensure
+      File.delete(processed_pdf_path)
     end
 
     def transaction_line?(line)
@@ -72,4 +88,6 @@ class TdStatementExtractor
   class InvalidMonthError < StandardError; end
   class InvalidDayError < StandardError; end
   class InvalidStatementDateError < StandardError; end
+
+  class GhostscriptNotInstalledError < StandardError; end
 end
