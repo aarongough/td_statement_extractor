@@ -20,9 +20,7 @@ RSpec.describe TdStatementExtractor::Statement do
         described_class.new(VISA_2014)
       }.to raise_error(described_class::GhostscriptNotInstalledError)
     end
-  end
 
-  describe "#process!" do
     it "returns correct data from a known PDF dated 2014" do
       statement = described_class.new(VISA_2014)
 
@@ -69,6 +67,51 @@ RSpec.describe TdStatementExtractor::Statement do
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(48)
       expect(statement.transactions.first).to eq(date: Date.parse("NOV 15 2019"), amount: 1.67, description: "SHOPIFY-CHARGE.COM OTTAWA")
+    end
+  end
+
+  describe "#total_activity" do
+    it "returns correct data from a known PDF dated 2014" do
+      statement = described_class.new(VISA_2014)
+      expect(statement.total_activity).to eq(347.83)
+    end
+
+    it "returns correct data from a known PDF dated 2015" do
+      statement = described_class.new(VISA_2015)
+      expect(statement.total_activity).to eq(-170.04)
+    end
+
+    it "returns correct data from a known PDF dated 2016" do
+      statement = described_class.new(VISA_2016)
+      expect(statement.total_activity).to eq(1495.15)
+    end
+
+    it "returns correct data from a known PDF dated 2017" do
+      statement = described_class.new(VISA_2017)
+      expect(statement.total_activity).to eq(532.53)
+    end
+
+    it "returns correct data from a known PDF dated 2018" do
+      statement = described_class.new(VISA_2018)
+      expect(statement.total_activity).to eq(1591.56)
+    end
+
+    it "returns correct data from a known PDF dated 2019" do
+      statement = described_class.new(VISA_2019)
+      expect(statement.total_activity).to eq(-600.55)
+    end
+  end
+
+  describe "#output_csv" do
+    it "saves the transaction list as a CSV" do
+      statement = described_class.new(VISA_2014)
+      temp_file_path = File.join(RSPEC_ROOT, "fixtures", "test_csv_output_#{Time.now.to_i}.csv")
+      statement.output_csv(temp_file_path)
+      csv_array = CSV.read(temp_file_path)
+      transaction_array = statement.transactions.map {|x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
+
+      expect(csv_array).to eq(transaction_array)
+      File.delete(temp_file_path) if File.file?(temp_file_path)
     end
   end
 
@@ -137,6 +180,11 @@ RSpec.describe TdStatementExtractor::Statement do
     it "returns correct data from a clean transaction line with negative amount" do
       clean_line = "DEC 2  DEC 3  PAYMENT - THANK YOU    -$827.69"
       expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: -827.69)
+    end
+
+    it "returns correct data from a clean transaction line with commas in amount" do
+      clean_line = "DEC 2  DEC 3  PAYMENT - THANK YOU    $8,227.69"
+      expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: 8227.69)
     end
 
     it "returns correct data from a transaction line with leading spaces" do

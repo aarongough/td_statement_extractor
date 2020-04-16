@@ -1,5 +1,6 @@
 require "pdf-reader"
 require "date"
+require "csv"
 
 module TdStatementExtractor
   class Statement
@@ -10,7 +11,7 @@ module TdStatementExtractor
     AMOUNT = /(?<amount>-?\$[,\d]+\.\d+)/
     DESCRIPTION = /#{DATE}\s+#{DATE}?\s+(?<description>.+)\s+#{AMOUNT}/
 
-    attr_reader :input_file_path, :temp_file_path, :debug_mode, :transactions, :statement_date, :pdf, :text
+    attr_accessor :input_file_path, :temp_file_path, :debug_mode, :transactions, :statement_date, :pdf, :text
 
     def initialize(input_file_path, debug_mode = false)
       @input_file_path = input_file_path
@@ -60,7 +61,7 @@ module TdStatementExtractor
 
     def transaction_from_line(line)
       date = line.match(DATE)&.[](:date)
-      amount = line.match(AMOUNT)&.[](:amount)&.gsub("$", "")&.to_f
+      amount = line.match(AMOUNT)&.[](:amount)&.gsub("$", "")&.gsub(",", "")&.to_f
       description = line.match(DESCRIPTION)&.[](:description)&.strip
 
       raise MissingDateError, "Error extracting DATE from line: #{line}" if date.nil? || date.empty?
@@ -88,6 +89,18 @@ module TdStatementExtractor
       end
 
       Date.parse("#{month} #{day} #{year}")
+    end
+
+    def total_activity
+      transactions.reduce(0) {|total, x| total + x[:amount] }.round(2)
+    end
+
+    def output_csv(output_path)
+      CSV.open(output_path, "w") do |csv|
+        transactions.each do |transaction|
+          csv << [ transaction[:date].strftime("%d/%m/%Y"), transaction[:description], transaction[:amount] ]
+        end
+      end
     end
 
     def self.check_for_ghostscript
