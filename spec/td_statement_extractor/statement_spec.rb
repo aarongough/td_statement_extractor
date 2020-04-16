@@ -26,7 +26,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(21)
-      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2014"), amount: -211.00, description: "PAYMENT - THANK YOU")
+      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2014"), amount: 211.00, description: "PAYMENT - THANK YOU")
     end
 
     it "returns correct data from a known PDF dated 2015" do
@@ -34,7 +34,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(34)
-      expect(statement.transactions.first).to eq(date: Date.parse("APR 13 2015"), amount: 47.94, description: "JUST EAT TORONTO")
+      expect(statement.transactions.first).to eq(date: Date.parse("APR 13 2015"), amount: -47.94, description: "JUST EAT TORONTO")
     end
 
     it "returns correct data from a known PDF dated 2016" do
@@ -42,7 +42,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(33)
-      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2016"), amount: 13.30, description: "Uber BV help.uber.co")
+      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2016"), amount: -13.30, description: "Uber BV help.uber.co")
     end
 
     it "returns correct data from a known PDF dated 2017" do
@@ -50,7 +50,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(33)
-      expect(statement.transactions.first).to eq(date: Date.parse("SEP 14 2017"), amount: 20.00, description: "PRESTO TORONTO")
+      expect(statement.transactions.first).to eq(date: Date.parse("SEP 14 2017"), amount: -20.00, description: "PRESTO TORONTO")
     end
 
     it "returns correct data from a known PDF dated 2018" do
@@ -58,7 +58,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(24)
-      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2018"), amount: 54.76, description: "CASA SUSHI TORONTO")
+      expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2018"), amount: -54.76, description: "CASA SUSHI TORONTO")
     end
 
     it "returns correct data from a known PDF dated 2019" do
@@ -66,7 +66,7 @@ RSpec.describe TdStatementExtractor::Statement do
 
       expect(statement.transactions).to be_a(Array)
       expect(statement.transactions.length).to be(48)
-      expect(statement.transactions.first).to eq(date: Date.parse("NOV 15 2019"), amount: 1.67, description: "SHOPIFY-CHARGE.COM OTTAWA")
+      expect(statement.transactions.first).to eq(date: Date.parse("NOV 15 2019"), amount: -1.67, description: "SHOPIFY-CHARGE.COM OTTAWA")
     end
   end
 
@@ -109,6 +109,21 @@ RSpec.describe TdStatementExtractor::Statement do
       statement.output_csv(temp_file_path)
       csv_array = CSV.read(temp_file_path)
       transaction_array = statement.transactions.map {|x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
+
+      expect(csv_array).to eq(transaction_array)
+      File.delete(temp_file_path) if File.file?(temp_file_path)
+    end
+
+    it "appends data to an existing CSV" do
+      statement1 = described_class.new(VISA_2014)
+      statement2 = described_class.new(VISA_2015)
+      temp_file_path = File.join(RSPEC_ROOT, "fixtures", "test_csv_output_#{Time.now.to_i}.csv")
+
+      statement1.output_csv(temp_file_path)
+      statement2.output_csv(temp_file_path)
+
+      csv_array = CSV.read(temp_file_path)
+      transaction_array = (statement1.transactions + statement2.transactions).map {|x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
 
       expect(csv_array).to eq(transaction_array)
       File.delete(temp_file_path) if File.file?(temp_file_path)
@@ -174,37 +189,37 @@ RSpec.describe TdStatementExtractor::Statement do
 
     it "returns correct data from a clean transaction line" do
       clean_line = "NOV 20  NOV 22  WM CANADA WATERLOO    $54.62"
-      expect(subject.transaction_from_line(clean_line)).to eq(date: "NOV 20", description: "WM CANADA WATERLOO", amount: 54.62)
+      expect(subject.transaction_from_line(clean_line)).to eq(date: "NOV 20", description: "WM CANADA WATERLOO", amount: -54.62)
     end
 
     it "returns correct data from a clean transaction line with negative amount" do
       clean_line = "DEC 2  DEC 3  PAYMENT - THANK YOU    -$827.69"
-      expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: -827.69)
+      expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: 827.69)
     end
 
     it "returns correct data from a clean transaction line with commas in amount" do
       clean_line = "DEC 2  DEC 3  PAYMENT - THANK YOU    $8,227.69"
-      expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: 8227.69)
+      expect(subject.transaction_from_line(clean_line)).to eq(date: "DEC 2", description: "PAYMENT - THANK YOU", amount: -8227.69)
     end
 
     it "returns correct data from a transaction line with leading spaces" do
       dirty_line = "  DEC 6  DEC 6  SHOPIFY-CHARGE.COM OTTAWA    $665.92"
-      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: 665.92)
+      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: -665.92)
     end
 
     it "returns correct data from a transaction line with trailing garbage" do
       dirty_line = "NOV 25  NOV 26  BELL CANADA (OB) MONTREAL    $76.78    TDSTM21000_7643586_007"
-      expect(subject.transaction_from_line(dirty_line)).to eq(date: "NOV 25", description: "BELL CANADA (OB) MONTREAL", amount: 76.78)
+      expect(subject.transaction_from_line(dirty_line)).to eq(date: "NOV 25", description: "BELL CANADA (OB) MONTREAL", amount: -76.78)
     end
 
     it "returns correct data from a transaction line with leading garbage" do
       dirty_line = "TDSTM210DE_7643586_0DEC 6  SHOPIFY-CHARGE.COM OTTAWA     $652.53"
-      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: 652.53)
+      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: -652.53)
     end
 
     it "returns correct data from a leading spaces, leading and trailing garbage" do
       dirty_line = "TDSTM210DE_7643586_0DEC 6  SHOPIFY-CHARGE.COM OTTAWA    $652.53TDST"
-      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: 652.53)
+      expect(subject.transaction_from_line(dirty_line)).to eq(date: "DEC 6", description: "SHOPIFY-CHARGE.COM OTTAWA", amount: -652.53)
     end
 
     it "raises an error when the transaction line does not have a valid date" do

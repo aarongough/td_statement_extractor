@@ -6,14 +6,13 @@ require "td_statement_extractor"
 include TdStatementExtractor
 
 input_file_path = File.expand_path(ARGV[0])
-output_file_name = File.basename(input_file_path, ".*") + ".csv"
-output_file_path = File.join(File.dirname(input_file_path), output_file_name)
+output_file_path = File.expand_path(ARGV[1])
 
 statement = Statement.new(input_file_path)
 statement.output_csv(output_file_path)
 
 puts 
-puts "Processed file: #{File.basename(input_file_path)}"
+puts "Processed file: #{input_file_path}"
 puts "CSV written to: #{output_file_path}"
 puts "Details:"
 puts "  Transactions: #{statement.transactions.count}"

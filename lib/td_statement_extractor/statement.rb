@@ -61,7 +61,7 @@ module TdStatementExtractor
 
     def transaction_from_line(line)
       date = line.match(DATE)&.[](:date)
-      amount = line.match(AMOUNT)&.[](:amount)&.gsub("$", "")&.gsub(",", "")&.to_f
+      amount = -(line.match(AMOUNT)&.[](:amount)&.gsub("$", "")&.gsub(",", "")&.to_f || 0)
       description = line.match(DESCRIPTION)&.[](:description)&.strip
 
       raise MissingDateError, "Error extracting DATE from line: #{line}" if date.nil? || date.empty?
@@ -92,11 +92,11 @@ module TdStatementExtractor
     end
 
     def total_activity
-      transactions.reduce(0) {|total, x| total + x[:amount] }.round(2)
+      -transactions.reduce(0) {|total, x| total + x[:amount] }.round(2)
     end
 
     def output_csv(output_path)
-      CSV.open(output_path, "w") do |csv|
+      CSV.open(output_path, "a") do |csv|
         transactions.each do |transaction|
           csv << [ transaction[:date].strftime("%d/%m/%Y"), transaction[:description], transaction[:amount] ]
         end
