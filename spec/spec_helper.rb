@@ -1,6 +1,9 @@
 require "bundler/setup"
-require "td_statement_extractor"
+require "simplecov"
 
+SimpleCov.start
+
+require "td_statement_extractor"
 RSPEC_ROOT = File.dirname(__FILE__)
 
 RSpec.configure do |config|
