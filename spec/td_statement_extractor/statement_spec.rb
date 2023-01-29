@@ -15,7 +15,7 @@ RSpec.describe TdStatementExtractor::Statement do
     end
 
     it "raises an error when ghostscript is not installed" do
-      expect(described_class).to receive(:`).with('which gs').and_return("")
+      expect(described_class).to receive(:`).with("which gs").and_return("")
       expect {
         described_class.new(VISA_2014)
       }.to raise_error(described_class::GhostscriptNotInstalledError)
@@ -108,7 +108,7 @@ RSpec.describe TdStatementExtractor::Statement do
       temp_file_path = File.join(RSPEC_ROOT, "fixtures", "test_csv_output_#{Time.now.to_i}.csv")
       statement.output_csv(temp_file_path)
       csv_array = CSV.read(temp_file_path)
-      transaction_array = statement.transactions.map {|x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
+      transaction_array = statement.transactions.map { |x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
 
       expect(csv_array).to eq(transaction_array)
       File.delete(temp_file_path) if File.file?(temp_file_path)
@@ -123,7 +123,7 @@ RSpec.describe TdStatementExtractor::Statement do
       statement2.output_csv(temp_file_path)
 
       csv_array = CSV.read(temp_file_path)
-      transaction_array = (statement1.transactions + statement2.transactions).map {|x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
+      transaction_array = (statement1.transactions + statement2.transactions).map { |x| [x[:date].strftime("%d/%m/%Y"), x[:description], x[:amount].to_s] }
 
       expect(csv_array).to eq(transaction_array)
       File.delete(temp_file_path) if File.file?(temp_file_path)
