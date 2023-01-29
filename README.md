@@ -1,3 +1,8 @@
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
+[![build](https://github.com/aarongough/td_statement_extractor/actions/workflows/ruby.yml/badge.svg)](https://github.com/aarongough/td_statement_extractor/actions/workflows/ruby.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8a22ae11816d0eebfd85/maintainability)](https://codeclimate.com/github/aarongough/td_statement_extractor/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8a22ae11816d0eebfd85/test_coverage)](https://codeclimate.com/github/aarongough/td_statement_extractor/test_coverage)
+
 # TD Statement Extractor
 
 Extract machine readable transaction data from TD credit card statements. Useful for importing data quickly into a bookkeeping or accounting system!
