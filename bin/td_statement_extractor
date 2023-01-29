@@ -3,18 +3,21 @@ require "rubygems"
 require "bundler/setup"
 require "td_statement_extractor"
 
-include TdStatementExtractor
+raise "Input file path cannot be blank" if ARGV[0].nil?
+raise "Output file path cannot be blank" if ARGV[1].nil?
 
 input_file_path = File.expand_path(ARGV[0])
 output_file_path = File.expand_path(ARGV[1])
 
-statement = Statement.new(input_file_path)
+raise "Input file does not exist" unless File.exist?(input_file_path)
+
+statement = TdStatementExtractor::Statement.new(input_file_path)
 statement.output_csv(output_file_path)
 
-puts 
+puts
 puts "Processed file: #{input_file_path}"
 puts "CSV written to: #{output_file_path}"
 puts "Details:"
 puts "  Transactions: #{statement.transactions.count}"
-puts "  Total activity: #{('$' + statement.total_activity.to_s).gsub("$-", "-$")}"
+puts "  Total activity: #{("$" + statement.total_activity.to_s).gsub("$-", "-$")}"
 puts
