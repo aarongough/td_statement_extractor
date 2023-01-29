@@ -2,6 +2,7 @@
 [![build](https://github.com/aarongough/td_statement_extractor/actions/workflows/ruby.yml/badge.svg)](https://github.com/aarongough/td_statement_extractor/actions/workflows/ruby.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/8a22ae11816d0eebfd85/maintainability)](https://codeclimate.com/github/aarongough/td_statement_extractor/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8a22ae11816d0eebfd85/test_coverage)](https://codeclimate.com/github/aarongough/td_statement_extractor/test_coverage)
+[![Gem Version](https://badge.fury.io/rb/td_statement_extractor.svg)](https://badge.fury.io/rb/td_statement_extractor)
 
 # TD Statement Extractor
 
