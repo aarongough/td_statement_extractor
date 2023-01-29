@@ -12,6 +12,9 @@ jobs:
     - name: Install Ruby (3.1.x)
       uses: ruby/setup-ruby@v1
 
+    - name: Install Ghostscript
+      run: apt-get install ghostscript gsfonts
+
     - name: Setup Code Climate test-reporter
       run: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
