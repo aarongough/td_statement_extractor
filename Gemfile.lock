@@ -71,10 +71,10 @@ GEM
     unicode-display_width (2.4.2)
 
 PLATFORMS
-  ruby
+  arm64-darwin-21
 
 DEPENDENCIES
-  bundler (~> 1.17)
+  bundler
   rake (>= 12.3.3)
   rspec (~> 3.0)
   simplecov (~> 0.17.1)
@@ -82,4 +82,4 @@ DEPENDENCIES
   td_statement_extractor!
 
 BUNDLED WITH
-   1.17.3
+   2.4.5
