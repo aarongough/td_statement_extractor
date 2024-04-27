@@ -5,7 +5,7 @@ VISA_2015 = File.join(RSPEC_ROOT, "fixtures", "VISA_2015.pdf")
 VISA_2016 = File.join(RSPEC_ROOT, "fixtures", "VISA_2016.pdf")
 VISA_2017 = File.join(RSPEC_ROOT, "fixtures", "VISA_2017.pdf")
 VISA_2018 = File.join(RSPEC_ROOT, "fixtures", "VISA_2018.pdf")
-VISA_2019 = File.join(RSPEC_ROOT, "fixtures", "VISA_2019.pdf")
+VISA_2019 = File.join(RSPEC_ROOT, "fixtures", "VISA\ 2019.pdf")
 
 RSpec.describe TdStatementExtractor::Statement do
   describe ".initialize" do
@@ -61,7 +61,7 @@ RSpec.describe TdStatementExtractor::Statement do
       expect(statement.transactions.first).to eq(date: Date.parse("JUL 15 2018"), amount: -54.76, description: "CASA SUSHI TORONTO")
     end
 
-    it "returns correct data from a known PDF dated 2019" do
+    it "returns correct data from a known PDF dated 2019 that has a space in the path" do
       statement = described_class.new(VISA_2019)
 
       expect(statement.transactions).to be_a(Array)
