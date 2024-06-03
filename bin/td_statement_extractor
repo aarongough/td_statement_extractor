@@ -3,21 +3,108 @@ require "rubygems"
 require "bundler/setup"
 require "td_statement_extractor"
 
-raise "Input file path cannot be blank" if ARGV[0].nil?
-raise "Output file path cannot be blank" if ARGV[1].nil?
+LOGO = <<~LOGO
 
-input_file_path = File.expand_path(ARGV[0])
-output_file_path = File.expand_path(ARGV[1])
+ _________ __          __                                __     
+/   _____//  |______ _/  |_  ____   _____   ____   _____/  |_   
+\\_____  \\\\   __\\__  \\\\   __\\/ __ \\ /     \\_/ __ \\ /    \\   __\\  
+/        \\|  |  / __ \\|  | \\  ___/|  Y Y  \\  ___/|   |  \\  |    
+/_______  /|__| (____  /__|  \\___  >__|_|  /\\___  >___|  /__|    
+        \\/           \\/          \\/      \\/     \\/     \\/        
+___________         __                        __                 
+\\_   _____/__  ____/  |_____________    _____/  |_  ___________  
+|    __)_\\  \\/  /\\   __\\_  __ \\__  \\ _/ ___\\   __\\/  _ \\_  __ \\ 
+|        \\>    <  |  |  |  | \\// __ \\\\  \\___|  | (  <_> )  | \\/ 
+/_______  /__/\\_ \\ |__|  |__|  (____  /\\___  >__|  \\____/|__|    
+        \\/      \\/                  \\/     \\/                    
 
-raise "Input file does not exist" unless File.exist?(input_file_path)
+Copyright (c) 2024 - by Aaron Gough
 
-statement = TdStatementExtractor::Statement.new(input_file_path)
-statement.output_csv(output_file_path)
+LOGO
 
-puts
-puts "Processed file: #{input_file_path}"
-puts "CSV written to: #{output_file_path}"
-puts "Details:"
-puts "  Transactions: #{statement.transactions.count}"
-puts "  Total activity: #{("$" + statement.total_activity.to_s).gsub("$-", "-$")}"
-puts
+HELP_TEXT = <<~HELP_TEXT
+
+  Usage: td_statement_extractor [input_file_path] [output_file_path]
+
+  Extracts transactions from a TD Bank statement PDF and outputs them to a CSV file.
+
+  Arguments:
+    input_file_path   The path to the TD Bank statement PDF file.
+    output_file_path  The path to the output CSV file.
+
+  Example:
+    td_statement_extractor ~/Downloads/td_statement.pdf ~/Desktop/transactions.csv
+
+HELP_TEXT
+
+def process_file(input_file_path)
+  raise "Input file does not exist" unless File.exist?(input_file_path)
+
+  if File.extname(input_file_path) != ".pdf"
+    puts "Input file must be a PDF file, skipping: #{input_file_path}"
+    return
+  end
+
+  puts "Processing file: #{input_file_path}"
+
+  statement = TdStatementExtractor::Statement.new(input_file_path)
+
+  puts
+  puts "Processed file: #{input_file_path}"
+  puts "Details:"
+  puts "  Transactions: #{statement.transactions.count}"
+  puts "  Total activity: #{("$" + statement.total_activity.to_s).gsub("$-", "-$")}"
+  puts
+
+  puts "Transactions:"
+  puts "  Date       | Description                           | Amount   "
+  puts "  -----------|---------------------------------------|----------"
+  statement.transactions.each do |transaction|
+    puts "  #{transaction[:date].to_s[0, 10].ljust(10)} | #{transaction[:description].to_s[0,37].ljust(37)} | #{("$" + transaction[:amount].to_s).gsub("$-", "-$")}"
+  end
+  puts "  -----------|---------------------------------------|----------"
+  puts
+
+  statement
+end
+
+def display_logo
+  puts LOGO
+end
+
+def display_help_text(error_message = "")
+  puts "ERROR: #{error_message}" unless error_message.empty?
+  puts HELP_TEXT
+  exit
+end
+
+def main
+  display_help_text if ARGV.include?("-h") || ARGV.include?("--help")
+  display_help_text("Wrong number of arguments") if ARGV.length < 2
+
+  display_logo
+  
+  input_file_paths = ARGV[0..-2]  # every argument except the last one
+  output_file_path = ARGV[-1]     # only the last element
+
+  puts "Processing #{input_file_paths.count} files..."
+  statements = []
+  input_file_paths.each do |input_file_path|
+    statements << process_file(input_file_path)
+  end
+
+  statements.compact!
+
+  puts "Writing data to output file: #{output_file_path}"
+  transactions = statements.map(&:transactions).flatten.compact
+  transactions.sort_by! { |transaction| transaction[:date] }
+  transactions.reverse!
+  transactions.uniq!
+
+  statement = statements.first
+  statement.transactions = transactions
+
+  statement.output_csv(output_file_path)
+end
+
+main

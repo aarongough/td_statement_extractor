@@ -41,9 +41,9 @@ module TdStatementExtractor
       # Use Ghostscript to decrypt and decompress the PDF. Also remove
       # all images and crop the margins to remove watermarking that interferes
       # with the scraping process
-      puts "Pre-processing file... This may take a minute."
+      puts "Decrypting and pre-processing file... This may take a minute."
       `gs -o "#{@temp_file_path}" -sDEVICE=pdfwrite -dFILTERVECTOR -dFILTERIMAGE -g5400x7200 -c "<</PageOffset [-36 -36]>> setpagedevice" -f "#{@input_file_path}" 2>&1`
-      puts "Pre-processing completed."
+      puts "Decryption and pre-processing completed."
     end
 
     def import_pdf
