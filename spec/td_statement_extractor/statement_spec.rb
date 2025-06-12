@@ -5,7 +5,7 @@ VISA_2015 = File.join(RSPEC_ROOT, "fixtures", "VISA_2015.pdf")
 VISA_2016 = File.join(RSPEC_ROOT, "fixtures", "VISA_2016.pdf")
 VISA_2017 = File.join(RSPEC_ROOT, "fixtures", "VISA_2017.pdf")
 VISA_2018 = File.join(RSPEC_ROOT, "fixtures", "VISA_2018.pdf")
-VISA_2019 = File.join(RSPEC_ROOT, "fixtures", "VISA\ 2019.pdf")
+VISA_2019 = File.join(RSPEC_ROOT, "fixtures", "VISA 2019.pdf")
 
 RSpec.describe TdStatementExtractor::Statement do
   describe ".initialize" do

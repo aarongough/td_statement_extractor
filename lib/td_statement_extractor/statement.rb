@@ -60,7 +60,7 @@ module TdStatementExtractor
 
     def transaction_from_line(line)
       date = line.match(DATE)&.[](:date)
-      amount = -(line.match(AMOUNT)&.[](:amount)&.gsub("$", "")&.gsub(",", "")&.to_f || 0)
+      amount = -(line.match(AMOUNT)&.[](:amount)&.delete("$")&.delete(",")&.to_f || 0)
       description = line.match(DESCRIPTION)&.[](:description)&.strip
 
       raise MissingDateError, "Error extracting DATE from line: #{line}" if date.nil? || date.empty?
