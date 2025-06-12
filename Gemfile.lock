@@ -3,12 +3,12 @@ PATH
   specs:
     td_statement_extractor (0.1.2)
       csv (~> 3.3.5)
-      pdf-reader (~> 2.4.0)
+      pdf-reader (~> 2.14.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    Ascii85 (1.1.1)
+    Ascii85 (2.0.1)
     afm (0.2.2)
     ast (2.4.3)
     base64 (0.3.0)
@@ -24,8 +24,8 @@ GEM
     parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
-    pdf-reader (2.4.2)
-      Ascii85 (~> 1.0)
+    pdf-reader (2.14.1)
+      Ascii85 (>= 1.0, < 3.0, != 2.0.0)
       afm (~> 0.2.1)
       hashery (~> 2.0)
       ruby-rc4

@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "pdf-reader", "~> 2.4.0"
+  spec.add_dependency "pdf-reader", "~> 2.14.1"
   spec.add_dependency "csv", "~> 3.3.5"
 
   spec.add_development_dependency "standard", "~> 1.50.0"
