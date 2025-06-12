@@ -1,6 +1,4 @@
-require "pdf-reader"
-require "date"
-require "csv"
+# frozen_string_literal: true
 
 module TdStatementExtractor
   class Statement
@@ -41,9 +39,9 @@ module TdStatementExtractor
       # Use Ghostscript to decrypt and decompress the PDF. Also remove
       # all images and crop the margins to remove watermarking that interferes
       # with the scraping process
-      puts "Decrypting and pre-processing file... This may take a minute."
+      puts "Decrypting and pre-processing file... This may take a minute." unless defined?(RSpec)
       `gs -o "#{@temp_file_path}" -sDEVICE=pdfwrite -dFILTERVECTOR -dFILTERIMAGE -g5400x7200 -c "<</PageOffset [-36 -36]>> setpagedevice" -f "#{@input_file_path}" 2>&1`
-      puts "Decryption and pre-processing completed."
+      puts "Decryption and pre-processing completed." unless defined?(RSpec)
     end
 
     def import_pdf

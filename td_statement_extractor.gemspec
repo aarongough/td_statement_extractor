@@ -9,7 +9,11 @@ Gem::Specification.new do |spec|
   spec.email = ["aaron.gough@gmail.com"]
 
   spec.summary = "Extract machine readable transaction data from TD credit card statements."
-  spec.description = "Extract machine readable transaction data from TD credit card statements."
+  spec.description = <<~EOM
+    Extract machine readable transaction data from TD credit card statements.
+    This gem parses PDF statements from TD Canada Trust and extracts transaction data into a structured format.
+    It is designed to work with the PDF format used by TD Canada Trust for their credit card statements.
+  EOM
   spec.homepage = "https://github.com/aarongough/td_statement_extractor"
   spec.license = "MIT"
 
@@ -26,10 +30,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "pdf-reader", "~> 2.4.0"
+  spec.add_dependency "csv", "~> 3.3.5"
 
-  spec.add_development_dependency "standard"
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake", ">= 12.3.3"
+  spec.add_development_dependency "standard", "~> 1.22.1"
+  spec.add_development_dependency "bundler", "~> 2.4.5"
+  spec.add_development_dependency "rake", "~> 13.0.6"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov", "~> 0.17.1"
 end

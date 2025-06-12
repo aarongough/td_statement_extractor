@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    td_statement_extractor (0.1.1)
+    td_statement_extractor (0.1.2)
+      csv (~> 3.3.5)
       pdf-reader (~> 2.4.0)
 
 GEM
@@ -10,6 +11,7 @@ GEM
     Ascii85 (1.1.0)
     afm (0.2.2)
     ast (2.4.2)
+    csv (3.3.5)
     diff-lcs (1.5.0)
     docile (1.4.0)
     hashery (2.1.2)
@@ -72,13 +74,14 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-24
 
 DEPENDENCIES
-  bundler
-  rake (>= 12.3.3)
+  bundler (~> 2.4.5)
+  rake (~> 13.0.6)
   rspec (~> 3.0)
   simplecov (~> 0.17.1)
-  standard
+  standard (~> 1.22.1)
   td_statement_extractor!
 
 BUNDLED WITH
