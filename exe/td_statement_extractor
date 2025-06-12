@@ -5,22 +5,22 @@ require "bundler/setup"
 require "td_statement_extractor"
 
 LOGO = <<~LOGO
-
- _________ __          __                                __     
-/   _____//  |______ _/  |_  ____   _____   ____   _____/  |_   
-\\_____  \\\\   __\\__  \\\\   __\\/ __ \\ /     \\_/ __ \\ /    \\   __\\  
-/        \\|  |  / __ \\|  | \\  ___/|  Y Y  \\  ___/|   |  \\  |    
-/_______  /|__| (____  /__|  \\___  >__|_|  /\\___  >___|  /__|    
-        \\/           \\/          \\/      \\/     \\/     \\/        
-___________         __                        __                 
-\\_   _____/__  ____/  |_____________    _____/  |_  ___________  
-|    __)_\\  \\/  /\\   __\\_  __ \\__  \\ _/ ___\\   __\\/  _ \\_  __ \\ 
-|        \\>    <  |  |  |  | \\// __ \\\\  \\___|  | (  <_> )  | \\/ 
-/_______  /__/\\_ \\ |__|  |__|  (____  /\\___  >__|  \\____/|__|    
-        \\/      \\/                  \\/     \\/                    
-
-Copyright (c) 2025 - by Aaron Gough
-
+  
+   _________ __          __                                __     
+  /   _____//  |______ _/  |_  ____   _____   ____   _____/  |_   
+  \\_____  \\\\   __\\__  \\\\   __\\/ __ \\ /     \\_/ __ \\ /    \\   __\\  
+  /        \\|  |  / __ \\|  | \\  ___/|  Y Y  \\  ___/|   |  \\  |    
+  /_______  /|__| (____  /__|  \\___  >__|_|  /\\___  >___|  /__|    
+          \\/           \\/          \\/      \\/     \\/     \\/        
+  ___________         __                        __                 
+  \\_   _____/__  ____/  |_____________    _____/  |_  ___________  
+  |    __)_\\  \\/  /\\   __\\_  __ \\__  \\ _/ ___\\   __\\/  _ \\_  __ \\ 
+  |        \\>    <  |  |  |  | \\// __ \\\\  \\___|  | (  <_> )  | \\/ 
+  /_______  /__/\\_ \\ |__|  |__|  (____  /\\___  >__|  \\____/|__|    
+          \\/      \\/                  \\/     \\/                    
+  
+  Copyright (c) 2025 - by Aaron Gough
+  
 LOGO
 
 HELP_TEXT = <<~HELP_TEXT
@@ -61,7 +61,7 @@ def process_file(input_file_path)
   puts "  Date       | Description                           | Amount   "
   puts "  -----------|---------------------------------------|----------"
   statement.transactions.each do |transaction|
-    puts "  #{transaction[:date].to_s[0, 10].ljust(10)} | #{transaction[:description].to_s[0,37].ljust(37)} | #{("$" + transaction[:amount].to_s).gsub("$-", "-$")}"
+    puts "  #{transaction[:date].to_s[0, 10].ljust(10)} | #{transaction[:description].to_s[0, 37].ljust(37)} | #{("$" + transaction[:amount].to_s).gsub("$-", "-$")}"
   end
   puts "  -----------|---------------------------------------|----------"
   puts
@@ -84,7 +84,7 @@ def main
   display_help_text("Wrong number of arguments") if ARGV.length < 2
 
   display_logo
-  
+
   input_file_paths = ARGV[0..-2]  # every argument except the last one
   output_file_path = ARGV[-1]     # only the last element
 
