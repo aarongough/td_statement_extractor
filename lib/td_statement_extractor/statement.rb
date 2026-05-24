@@ -95,10 +95,16 @@ module TdStatementExtractor
     end
 
     # Newer TD statements no longer show `total activity` as a line item,
-    # so we want a `sub total` value as well. This value does not include 
+    # so we want a `sub total` value as well. This value does not include
     # payments, credits, or refunds, and is the sum of all debits (i.e. purchases)
     def sub_total
       -transactions.select { |t| t[:amount] < 0 }.reduce(0) { |total, x| total + x[:amount] }.round(2)
+    end
+
+    # Signed contribution of payments and credits, such that
+    # sub_total + payments_and_credits == total_activity.
+    def payments_and_credits
+      -transactions.select { |t| t[:amount] > 0 }.reduce(0) { |total, x| total + x[:amount] }.round(2)
     end
 
     def output_csv(output_path)
