@@ -55,6 +55,7 @@ def process_file(input_file_path)
   puts "Details:"
   puts "  Transactions: #{statement.transactions.count}"
   puts "  Total activity: #{("$" + statement.total_activity.to_s).gsub("$-", "-$")}"
+  puts "  Sub total (purchases only): #{("$" + statement.sub_total.to_s).gsub("$-", "-$")}"
   puts
 
   puts "Transactions:"

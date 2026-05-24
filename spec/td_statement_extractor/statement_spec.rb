@@ -102,6 +102,38 @@ RSpec.describe TdStatementExtractor::Statement do
     end
   end
 
+  describe "sub_total" do
+    it "returns correct data from a known PDF dated 2014" do
+      statement = described_class.new(VISA_2014)
+      expect(statement.sub_total).to eq(746.35)
+    end
+
+    it "returns correct data from a known PDF dated 2015" do
+      statement = described_class.new(VISA_2015)
+      expect(statement.sub_total).to eq(7715.87)
+    end
+
+    it "returns correct data from a known PDF dated 2016" do
+      statement = described_class.new(VISA_2016)
+      expect(statement.sub_total).to eq(2788.15)
+    end
+
+    it "returns correct data from a known PDF dated 2017" do
+      statement = described_class.new(VISA_2017)
+      expect(statement.sub_total).to eq(2089.25)
+    end
+
+    it "returns correct data from a known PDF dated 2018" do
+      statement = described_class.new(VISA_2018)
+      expect(statement.sub_total).to eq(1591.56)
+    end
+
+    it "returns correct data from a known PDF dated 2019" do
+      statement = described_class.new(VISA_2019)
+      expect(statement.sub_total).to eq(7507.74)
+    end
+  end
+
   describe "#output_csv" do
     it "saves the transaction list as a CSV" do
       statement = described_class.new(VISA_2014)

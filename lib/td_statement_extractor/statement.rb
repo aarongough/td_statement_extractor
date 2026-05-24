@@ -94,6 +94,13 @@ module TdStatementExtractor
       -transactions.reduce(0) { |total, x| total + x[:amount] }.round(2)
     end
 
+    # Newer TD statements no longer show `total activity` as a line item,
+    # so we want a `sub total` value as well. This value does not include 
+    # payments, credits, or refunds, and is the sum of all debits (i.e. purchases)
+    def sub_total
+      -transactions.select { |t| t[:amount] < 0 }.reduce(0) { |total, x| total + x[:amount] }.round(2)
+    end
+
     def output_csv(output_path)
       CSV.open(output_path, "a") do |csv|
         transactions.each do |transaction|
