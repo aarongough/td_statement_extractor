@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require "rubygems"
-require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "td_statement_extractor"
 
 LOGO = <<~LOGO
@@ -56,6 +55,7 @@ def process_file(input_file_path)
   puts "  Transactions: #{statement.transactions.count}"
   puts "  Total activity: #{("$" + statement.total_activity.to_s).gsub("$-", "-$")}"
   puts "  Sub total (purchases only): #{("$" + statement.sub_total.to_s).gsub("$-", "-$")}"
+  puts "  Payments and credits: #{("$" + statement.payments_and_credits.to_s).gsub("$-", "-$")}"
   puts
 
   puts "Transactions:"
